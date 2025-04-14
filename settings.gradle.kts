@@ -22,3 +22,4 @@ dependencyResolutionManagement {
 rootProject.name = "CommerceMainApp"
 include(":app")
 include(":mockserver")
+include(":data")
