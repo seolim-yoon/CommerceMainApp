@@ -10,6 +10,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -23,15 +24,6 @@ internal fun ProductImageItem(
     modifier: Modifier = Modifier
 ) {
     Box {
-        Image(
-            painter = if (isFavorite) painterResource(R.drawable.ic_btn_heart_on)
-            else painterResource(R.drawable.ic_btn_heart_off),
-            contentDescription = null,
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .padding(4.dp)
-        )
-
         if (LocalInspectionMode.current) {
             Icon(
                 imageVector = Icons.Default.AccountBox,
@@ -42,8 +34,18 @@ internal fun ProductImageItem(
             AsyncImage(
                 model = imageUrl,
                 contentDescription = null,
+                contentScale = ContentScale.Crop,
                 modifier = modifier
             )
         }
+
+        Image(
+            painter = if (isFavorite) painterResource(R.drawable.ic_btn_heart_on)
+            else painterResource(R.drawable.ic_btn_heart_off),
+            contentDescription = null,
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(4.dp)
+        )
     }
 }

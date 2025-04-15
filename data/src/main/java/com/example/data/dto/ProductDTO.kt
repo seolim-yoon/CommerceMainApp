@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ProductDTO(
     @SerialName("data")
-    val productData: List<ProductData> = listOf()
+    val productDataList: List<ProductData> = listOf()
 ) {
     @Serializable
     data class ProductData(

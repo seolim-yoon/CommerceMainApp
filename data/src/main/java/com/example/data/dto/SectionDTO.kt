@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class SectionDTO(
     @SerialName("data")
-    val sectionData: List<SectionData> = listOf(),
+    val sectionDataList: List<SectionData> = listOf(),
     @SerialName("paging")
     val paging: Paging = Paging()
 ) {
