@@ -15,6 +15,7 @@ import com.example.commercemainapp.ui.theme.Red
 
 @Composable
 internal fun DiscountInfoItem(
+    isVisible: Boolean,
     discountPercent: Int,
     discountedPrice: Int,
     originalPrice: Int
@@ -23,12 +24,14 @@ internal fun DiscountInfoItem(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(4.dp)
     ) {
-        Text(
-            text = stringResource(R.string.discount_percent, discountPercent),
-            color = Red,
-            fontWeight = FontWeight.Bold
-        )
+        if (isVisible) {
+            Text(
+                text = stringResource(R.string.discount_percent, discountPercent),
+                color = Red,
+                fontWeight = FontWeight.Bold
+            )
 
+        }
 
         Text(
             text = stringResource(

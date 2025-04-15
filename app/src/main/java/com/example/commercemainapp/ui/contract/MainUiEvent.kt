@@ -5,7 +5,7 @@ import com.example.commercemainapp.model.ProductUiModel
 import com.example.commercemainapp.model.SectionUiModel
 
 sealed class MainUiEvent: UiEvent {
-    data class LoadMore(val page: Int): MainUiEvent()
+    data object LoadMore: MainUiEvent()
     data object Refresh: MainUiEvent()
     data class ClickFavorite(
         val sectionUiModel: SectionUiModel,

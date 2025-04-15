@@ -20,7 +20,8 @@ import com.example.commercemainapp.util.ProductParameterProvider
 
 @Composable
 internal fun VerticalItem(
-    product: ProductUiModel
+    product: ProductUiModel,
+    onClickFavorite: () -> Unit
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(4.dp),
@@ -31,6 +32,7 @@ internal fun VerticalItem(
         ProductImageItem(
             isFavorite = product.isFavorite,
             imageUrl = product.image,
+            onClickFavorite = onClickFavorite,
             modifier = Modifier
                 .fillMaxWidth()
                 .aspectRatio(6f / 4f)
@@ -47,6 +49,7 @@ internal fun VerticalItem(
             horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             DiscountInfoItem(
+                isVisible = product.discountedPrice != 0,
                 discountPercent = product.discountPercent,
                 discountedPrice = product.discountedPrice,
                 originalPrice = product.originalPrice
@@ -65,7 +68,8 @@ internal fun VerticalItem(
 private fun PreviewVerticalListItem(@PreviewParameter(ProductParameterProvider::class) product: ProductUiModel) {
     CommerceMainAppTheme {
         VerticalItem(
-            product = product
+            product = product,
+            onClickFavorite = {}
         )
     }
 }

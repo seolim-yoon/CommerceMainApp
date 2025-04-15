@@ -18,7 +18,8 @@ import com.example.commercemainapp.util.ProductParameterProvider
 
 @Composable
 internal fun HorizontalItem(
-    product: ProductUiModel
+    product: ProductUiModel,
+    onClickFavorite: () -> Unit
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(4.dp),
@@ -30,6 +31,7 @@ internal fun HorizontalItem(
         ProductImageItem(
             isFavorite = product.isFavorite,
             imageUrl = product.image,
+            onClickFavorite = onClickFavorite,
             modifier = Modifier.size(width = 150.dp, height = 200.dp)
         )
 
@@ -40,6 +42,7 @@ internal fun HorizontalItem(
         )
 
         DiscountInfoItem(
+            isVisible = product.discountedPrice != 0,
             discountPercent = product.discountPercent,
             discountedPrice = product.discountedPrice,
             originalPrice = product.originalPrice
@@ -57,7 +60,8 @@ internal fun HorizontalItem(
 private fun PreviewHorizontalListItem(@PreviewParameter(ProductParameterProvider::class) product: ProductUiModel) {
     CommerceMainAppTheme {
         HorizontalItem(
-            product = product
+            product = product,
+            onClickFavorite = {}
         )
     }
 }

@@ -5,7 +5,7 @@ enum class SectionType {
 
     companion object {
         fun fromValueByString(value: String): SectionType {
-            return entries.find { it.name == value } ?: HORIZONTAL
+            return entries.find { it.name.lowercase() == value } ?: HORIZONTAL
         }
     }
 }

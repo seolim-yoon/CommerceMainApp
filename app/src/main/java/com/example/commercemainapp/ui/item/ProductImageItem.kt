@@ -1,9 +1,9 @@
 package com.example.commercemainapp.ui.item
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material3.Icon
@@ -21,6 +21,7 @@ import com.example.commercemainapp.R
 internal fun ProductImageItem(
     isFavorite: Boolean,
     imageUrl: String,
+    onClickFavorite: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Box {
@@ -46,6 +47,9 @@ internal fun ProductImageItem(
             modifier = Modifier
                 .align(Alignment.TopEnd)
                 .padding(4.dp)
+                .clickable {
+                    onClickFavorite()
+                }
         )
     }
 }

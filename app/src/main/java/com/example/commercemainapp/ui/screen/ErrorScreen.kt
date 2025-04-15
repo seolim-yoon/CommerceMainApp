@@ -17,13 +17,12 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 internal fun ErrorScreen(
-    errorMessage: String,
-    modifier: Modifier = Modifier
+    errorMessage: String
 ) {
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize()
     ) {
         Icon(
             imageVector = Icons.Default.Warning,
