@@ -5,7 +5,7 @@ import com.example.commercemainapp.base.UiState
 import com.example.commercemainapp.model.SectionUiModel
 
 data class MainUiState(
-    val loadState: LoadState = LoadState.Success,
+    val loadState: LoadState = LoadState.Loading,
     val currentPage: Int = 1,
     val sectionList: List<SectionUiModel> = emptyList()
 ): UiState

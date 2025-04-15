@@ -37,11 +37,10 @@ abstract class BaseViewModel<State: UiState, Event: UiEvent> : ViewModel() {
     abstract fun onEvent(event: Event)
 
     protected fun viewModelLaunch(
-        dispatcher: CoroutineDispatcher = Dispatchers.Main,
         onSuccess: suspend () -> Unit
     ) {
         viewModelScope.launch(
-            context = dispatcher + exceptionHandler,
+            context = exceptionHandler,
         ) {
             onSuccess.invoke()
         }

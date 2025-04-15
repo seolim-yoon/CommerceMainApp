@@ -1,6 +1,5 @@
 package com.example.commercemainapp
 
-import androidx.lifecycle.viewModelScope
 import com.example.commercemainapp.base.BaseViewModel
 import com.example.commercemainapp.base.LoadState
 import com.example.commercemainapp.mapper.UiModelMapper
@@ -10,7 +9,6 @@ import com.example.commercemainapp.ui.contract.MainUiEvent
 import com.example.commercemainapp.ui.contract.MainUiState
 import com.example.data.repository.SectionRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -18,6 +16,8 @@ class MainViewModel @Inject constructor(
     private val sectionRepository: SectionRepository,
     private val uiModelMapper: UiModelMapper
 ) : BaseViewModel<MainUiState, MainUiEvent>() {
+    private var isLoadingPaging = false
+
     override fun createInitialState(): MainUiState = MainUiState()
 
     override fun handleException(throwable: Throwable) {
@@ -33,21 +33,26 @@ class MainViewModel @Inject constructor(
     }
 
     private fun getSectionList() {
-        viewModelScope.launch {
-            sectionRepository.getSectionList(currentState.currentPage).collect { sectionDto ->
-                sectionDto.sectionDataList.forEach { section ->
-                    sectionRepository.getProductList(section.id).collect { productList ->
+        if (isLoadingPaging) return
+
+        viewModelLaunch {
+            isLoadingPaging = true
+            try {
+                sectionRepository.getSectionList(currentState.currentPage).collect { pair ->
+                    val nextPage = pair.first
+                    val section = pair.second
+
+                    sectionRepository.getProductList(sectionId = section.id).collect { product ->
                         setState {
                             copy(
                                 loadState = LoadState.Success,
-                                currentPage = sectionDto.paging.nextPage,
+                                currentPage = nextPage,
                                 sectionList = sectionList.toMutableList().apply {
-
                                     add(
                                         uiModelMapper.mapToSectionUiModel(
                                             sectionData = section,
                                             productList = uiModelMapper.mapToProductUiModelList(
-                                                productList
+                                                product
                                             )
                                         )
                                     )
@@ -56,7 +61,12 @@ class MainViewModel @Inject constructor(
                         }
                     }
                 }
+            } catch (e: Exception) {
+                setState {
+                    copy(loadState = LoadState.Error(e))
+                }
             }
+            isLoadingPaging = false
         }
     }
 
