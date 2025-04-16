@@ -7,17 +7,22 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.commercemainapp.R
+import com.example.commercemainapp.ui.theme.CommerceMainAppTheme
 
 @Composable
 internal fun ErrorScreen(
-    errorMessage: String
+    errorMessage: String,
+    onRefresh:() -> Unit
 ) {
     Column(
         verticalArrangement = Arrangement.Center,
@@ -33,11 +38,23 @@ internal fun ErrorScreen(
             text = errorMessage,
             modifier = Modifier.padding(15.dp)
         )
+        Button(
+            onClick = onRefresh
+        ) {
+            Text(
+                text = stringResource(R.string.refresh)
+            )
+        }
     }
 }
 
 @Preview(showBackground = true)
 @Composable
 private fun PreviewErrorScreen() {
-    ErrorScreen(errorMessage = "에러 발생!")
+    CommerceMainAppTheme {
+        ErrorScreen(
+            errorMessage = "에러 발생!",
+            onRefresh = {}
+        )
+    }
 }

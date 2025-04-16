@@ -22,20 +22,24 @@ internal fun MainScreen(
 ) {
     val pullToRefreshState = rememberPullRefreshState(
         refreshing = state.loadState is LoadState.Loading,
-        onRefresh = { onEvent(MainUiEvent.Refresh) }
+        onRefresh = {
+            onEvent(MainUiEvent.Refresh)
+        }
     )
 
     Box(
         modifier = modifier
             .fillMaxSize()
             .pullRefresh(
-                state = pullToRefreshState
+                state = pullToRefreshState,
+                enabled = state.loadState !is LoadState.Error
             )
     ) {
         when (state.loadState) {
             is LoadState.Success -> {
                 SectionListScreen(
                     sectionList = state.sectionList,
+                    isLoadMore = state.isLoadMore,
                     onClickFavorite = { section, product ->
                         onEvent(MainUiEvent.ClickFavorite(section, product))
                     },
@@ -47,7 +51,10 @@ internal fun MainScreen(
 
             is LoadState.Error -> {
                 ErrorScreen(
-                    errorMessage = state.loadState.error.message.toString()
+                    errorMessage = state.loadState.error.message.toString(),
+                    onRefresh = {
+                        onEvent(MainUiEvent.Refresh)
+                    }
                 )
             }
 

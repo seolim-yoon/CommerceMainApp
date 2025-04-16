@@ -1,5 +1,6 @@
 package com.example.data.repository
 
+import android.util.Log
 import com.example.data.api.SectionApi
 import com.example.data.dto.ProductDTO
 import com.example.data.dto.SectionDTO
@@ -18,10 +19,17 @@ class SectionRepository @Inject constructor(
         coroutineScope {
             sectionData.sectionDataList.map { section ->
                 async {
-                    sectionData.paging.nextPage to section
+                    try {
+                        sectionData.paging.nextPage to section
+                    } catch (e: Exception) {
+                        Log.e("Exception", "sectionId = ${section.id} Exception (msg : ${e.message})")
+                        null
+                    }
                 }
             }.forEach { deferred ->
-                emit(deferred.await())
+                deferred.await()?.let {
+                    emit(it)
+                }
             }
         }
     }

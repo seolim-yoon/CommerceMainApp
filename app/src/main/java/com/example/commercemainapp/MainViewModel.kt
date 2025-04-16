@@ -23,6 +23,7 @@ class MainViewModel @Inject constructor(
     override fun handleException(throwable: Throwable) {
         setState {
             copy(
+                isLoadMore = false,
                 loadState = LoadState.Error(throwable)
             )
         }
@@ -37,47 +38,33 @@ class MainViewModel @Inject constructor(
 
         viewModelLaunch {
             isLoadingPaging = true
-            try {
-                sectionRepository.getSectionList(currentState.currentPage).collect { pair ->
-                    val nextPage = pair.first
-                    val section = pair.second
+            sectionRepository.getSectionList(currentState.currentPage).collect { pair ->
+                val nextPage = pair.first
+                val section = pair.second
 
-                    sectionRepository.getProductList(sectionId = section.id).collect { product ->
-                        setState {
-                            copy(
-                                loadState = LoadState.Success,
-                                currentPage = nextPage,
-                                sectionList = sectionList.toMutableList().apply {
-                                    add(
-                                        uiModelMapper.mapToSectionUiModel(
-                                            sectionData = section,
-                                            productList = uiModelMapper.mapToProductUiModelList(
-                                                product
-                                            )
+                sectionRepository.getProductList(sectionId = section.id).collect { product ->
+                    setState {
+                        copy(
+                            loadState = LoadState.Success,
+                            isLoadMore = false,
+                            currentPage = nextPage,
+                            sectionList = sectionList.toMutableList().apply {
+                                add(
+                                    uiModelMapper.mapToSectionUiModel(
+                                        sectionData = section,
+                                        productList = uiModelMapper.mapToProductUiModelList(
+                                            product
                                         )
                                     )
-                                }
-                            )
-                        }
+                                )
+                            }
+                        )
                     }
                 }
-            } catch (e: Exception) {
-                setState {
-                    copy(loadState = LoadState.Error(e))
-                }
             }
+
             isLoadingPaging = false
         }
-    }
-
-    private fun refresh() {
-        setState {
-            copy(
-                loadState = LoadState.Loading,
-                currentPage = 1
-            )
-        }
-        getSectionList()
     }
 
     private fun clickFavorite(sectionUiModel: SectionUiModel, productUiModel: ProductUiModel) {
@@ -103,11 +90,23 @@ class MainViewModel @Inject constructor(
     override fun onEvent(event: MainUiEvent) {
         when (event) {
             is MainUiEvent.LoadMore -> {
+                setState {
+                    copy(
+                        isLoadMore = true
+                    )
+                }
                 getSectionList()
             }
 
             is MainUiEvent.Refresh -> {
-                refresh()
+                setState {
+                    copy(
+                        loadState = LoadState.Loading,
+                        isLoadMore = false,
+                        currentPage = 1
+                    )
+                }
+                getSectionList()
             }
 
             is MainUiEvent.ClickFavorite -> {

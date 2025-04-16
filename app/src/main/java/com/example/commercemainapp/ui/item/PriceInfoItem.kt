@@ -48,10 +48,8 @@ internal fun PriceInfoItem(
     isVisible: Boolean,
     originalPrice: Int
 ) {
-    if (isVisible) {
-        Text(
-            text = stringResource(R.string.price_won, originalPrice),
-            textDecoration = TextDecoration.LineThrough
-        )
-    }
+    Text(
+        text = if (isVisible) stringResource(R.string.price_won, originalPrice) else stringResource(R.string.empty),
+        textDecoration = TextDecoration.LineThrough
+    )
 }

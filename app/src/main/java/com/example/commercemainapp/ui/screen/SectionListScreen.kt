@@ -14,14 +14,17 @@ import com.example.commercemainapp.model.ProductUiModel
 import com.example.commercemainapp.model.SectionUiModel
 import com.example.commercemainapp.ui.item.GridListItem
 import com.example.commercemainapp.ui.item.HorizontalListItem
+import com.example.commercemainapp.ui.item.LoadMoreItem
 import com.example.commercemainapp.ui.item.SectionTitleItem
 import com.example.commercemainapp.ui.item.VerticalItem
+import com.example.commercemainapp.util.LOAD_MORE_ITEM_TYPE
 import com.example.commercemainapp.util.SectionType
 import com.example.commercemainapp.util.VERTICAL_ITEM_TYPE
 
 @Composable
 internal fun SectionListScreen(
     sectionList: List<SectionUiModel>,
+    isLoadMore: Boolean,
     onClickFavorite: (SectionUiModel, ProductUiModel) -> Unit,
     loadMoreItem: () -> Unit
 ) {
@@ -93,6 +96,14 @@ internal fun SectionListScreen(
                             }
                         )
                     }
+                }
+            }
+
+            if (isLoadMore) {
+                item(
+                    contentType = { LOAD_MORE_ITEM_TYPE }
+                ) {
+                    LoadMoreItem()
                 }
             }
         }
