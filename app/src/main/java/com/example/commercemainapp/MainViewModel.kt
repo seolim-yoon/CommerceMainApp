@@ -9,6 +9,9 @@ import com.example.commercemainapp.ui.contract.MainUiEvent
 import com.example.commercemainapp.ui.contract.MainUiState
 import com.example.data.repository.SectionRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 @HiltViewModel
@@ -17,6 +20,7 @@ class MainViewModel @Inject constructor(
     private val uiModelMapper: UiModelMapper
 ) : BaseViewModel<MainUiState, MainUiEvent>() {
     private var isLoadingPaging = false
+    private var currentPage = 1
 
     override fun createInitialState(): MainUiState = MainUiState()
 
@@ -33,33 +37,37 @@ class MainViewModel @Inject constructor(
         getSectionList()
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     private fun getSectionList() {
         if (isLoadingPaging) return
 
         viewModelLaunch {
             isLoadingPaging = true
-            sectionRepository.getSectionList(currentState.currentPage).collect { pair ->
+            sectionRepository.getSectionList(currentPage).flatMapConcat { pair ->
                 val nextPage = pair.first
                 val section = pair.second
 
-                sectionRepository.getProductList(sectionId = section.id).collect { product ->
-                    setState {
-                        copy(
-                            loadState = LoadState.Success,
-                            isLoadMore = false,
-                            currentPage = nextPage,
-                            sectionList = sectionList.toMutableList().apply {
-                                add(
-                                    uiModelMapper.mapToSectionUiModel(
-                                        sectionData = section,
-                                        productList = uiModelMapper.mapToProductUiModelList(
-                                            product
-                                        )
+                currentPage = nextPage
+
+                sectionRepository.getProductList(sectionId = section.id).map { product ->
+                    section to product
+                }
+            }.collect { (section, product) ->
+                setState {
+                    copy(
+                        loadState = LoadState.Success,
+                        isLoadMore = false,
+                        sectionList = sectionList.toMutableList().apply {
+                            add(
+                                uiModelMapper.mapToSectionUiModel(
+                                    sectionData = section,
+                                    productList = uiModelMapper.mapToProductUiModelList(
+                                        product
                                     )
                                 )
-                            }
-                        )
-                    }
+                            )
+                        }
+                    )
                 }
             }
 
@@ -99,11 +107,10 @@ class MainViewModel @Inject constructor(
             }
 
             is MainUiEvent.Refresh -> {
+                currentPage = 1
                 setState {
                     copy(
-                        loadState = LoadState.Loading,
-                        isLoadMore = false,
-                        currentPage = 1
+                        loadState = LoadState.Loading
                     )
                 }
                 getSectionList()
