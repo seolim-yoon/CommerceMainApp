@@ -45,28 +45,24 @@ class MainViewModel @Inject constructor(
             isLoadingPaging = true
             sectionRepository.getSectionList(currentPage).flatMapConcat { pair ->
                 val nextPage = pair.first
-                val section = pair.second
+                val sectionData = pair.second
 
                 currentPage = nextPage
 
-                sectionRepository.getProductList(sectionId = section.id).map { product ->
-                    section to product
+                sectionRepository.getProductList(sectionId = sectionData.id).map { product ->
+                    uiModelMapper.mapToSectionUiModel(
+                        sectionData = sectionData,
+                        productList = uiModelMapper.mapToProductUiModelList(
+                            product
+                        )
+                    )
                 }
-            }.collect { (section, product) ->
+            }.collect { section ->
                 setState {
                     copy(
                         loadState = LoadState.Success,
                         isLoadMore = false,
-                        sectionList = sectionList.toMutableList().apply {
-                            add(
-                                uiModelMapper.mapToSectionUiModel(
-                                    sectionData = section,
-                                    productList = uiModelMapper.mapToProductUiModelList(
-                                        product
-                                    )
-                                )
-                            )
-                        }
+                        sectionList = sectionList + section
                     )
                 }
             }

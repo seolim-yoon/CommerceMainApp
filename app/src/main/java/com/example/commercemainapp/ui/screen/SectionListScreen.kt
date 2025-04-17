@@ -98,13 +98,13 @@ internal fun SectionListScreen(
                     }
                 }
             }
+        }
 
-            if (isLoadMore) {
-                item(
-                    contentType = { LOAD_MORE_ITEM_TYPE }
-                ) {
-                    LoadMoreItem()
-                }
+        if (isLoadMore) {
+            item(
+                contentType = { LOAD_MORE_ITEM_TYPE }
+            ) {
+                LoadMoreItem()
             }
         }
     }

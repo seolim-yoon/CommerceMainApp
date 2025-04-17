@@ -8,15 +8,6 @@ import com.example.data.dto.SectionDTO
 import javax.inject.Inject
 
 class UiModelMapper @Inject constructor() {
-    fun mapToSectionUiModelList(sectionDataList: List<SectionDTO.SectionData>): List<SectionUiModel> =
-        sectionDataList.map { sectionData ->
-            SectionUiModel(
-                id = sectionData.id,
-                title = sectionData.title,
-                type = SectionType.fromValueByString(sectionData.type)
-            )
-        }
-
     fun mapToSectionUiModel(sectionData: SectionDTO.SectionData, productList: List<ProductUiModel>): SectionUiModel =
         SectionUiModel(
             id = sectionData.id,
