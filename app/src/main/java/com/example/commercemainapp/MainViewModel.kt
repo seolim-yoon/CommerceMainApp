@@ -91,6 +91,11 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    private fun clearData() {
+        currentPage = 1
+        isLoadingPaging = false
+    }
+
     override fun onEvent(event: MainUiEvent) {
         when (event) {
             is MainUiEvent.LoadMore -> {
@@ -103,12 +108,12 @@ class MainViewModel @Inject constructor(
             }
 
             is MainUiEvent.Refresh -> {
-                currentPage = 1
                 setState {
                     copy(
                         loadState = LoadState.Loading
                     )
                 }
+                clearData()
                 getSectionList()
             }
 
